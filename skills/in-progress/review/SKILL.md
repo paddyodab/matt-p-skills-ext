@@ -1,14 +1,15 @@
 ---
 name: review
-description: Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/PRD asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
+description: Review the changes since a fixed point (commit, branch, tag, or merge-base) along three axes — Standards (does the code follow this repo's documented coding standards?), Spec (does the code match what the originating issue/PRD asked for?), and Freshness (does every docstring/schema/contract in the diff still accurately describe the code?). Runs all three reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
 ---
 
-Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
+Three-axis review of the diff between `HEAD` and a fixed point the user supplies:
 
 - **Standards** — does the code conform to this repo's documented coding standards?
 - **Spec** — does the code faithfully implement the originating issue / PRD / spec?
+- **Freshness** — does every docstring, schema, and contract in the diff still accurately describe what the code does?
 
-Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
+All three axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
 
 The issue tracker should have been provided to you — run `/setup-matt-pocock-skills` if `docs/agents/issue-tracker.md` is missing.
 
@@ -35,9 +36,9 @@ Look for the originating spec, in this order:
 
 Anything in the repo that documents how code should be written, such as `CODING_STANDARDS.md` or `CONTRIBUTING.md`.
 
-### 4. Spawn both sub-agents in parallel
+### 4. Spawn all three sub-agents in parallel
 
-Send a single message with two `Agent` tool calls. Use the `general-purpose` subagent for both.
+Send a single message with three `Agent` tool calls. Use the `general-purpose` subagent for all.
 
 **Standards sub-agent prompt** — include:
 
@@ -51,19 +52,25 @@ Send a single message with two `Agent` tool calls. Use the `general-purpose` sub
 - The path or fetched contents of the spec.
 - The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. Under 400 words."
 
+**Freshness sub-agent prompt** — include:
+
+- The diff command and commit list.
+- The brief: "Check every docstring, schema description, and contract in the diff — @intent, @param, @returns, @raises, ADRs, house-rules, CONTEXT.md entries, and any generated or hand-maintained docs. For each one, decide whether the description still accurately describes what the code does after the changes. Flag any where the change invalidated the metadata. Under 400 words."
+
 If the spec is missing, skip the Spec sub-agent and note this in the final report.
 
 ### 5. Aggregate
 
-Present the two reports under `## Standards` and `## Spec` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings — the two axes are deliberately separate (see _Why two axes_).
+Present the three reports under `## Standards`, `## Spec`, and `## Freshness` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings — the three axes are deliberately separate (see _Why three axes_).
 
 End with a one-line summary: total findings per axis, and the worst issue _within each axis_ (if any). Don't pick a single winner across axes — that's the reranking the separation exists to prevent.
 
-## Why two axes
+## Why three axes
 
-A change can pass one axis and fail the other:
+A change can pass two axes and fail the third:
 
-- Code that follows every standard but implements the wrong thing → **Standards pass, Spec fail.**
-- Code that does exactly what the issue asked but breaks the project's conventions → **Spec pass, Standards fail.**
+- Code that follows every standard and matches the spec, but its @intent no longer describes the new behavior → **Standards pass, Spec pass, Freshness fail.**
+- Code that follows every standard and its metadata is fresh, but it implements the wrong thing → **Standards pass, Spec fail, Freshness pass.**
+- Code that matches the spec and its metadata is fresh, but breaks project conventions → **Standards fail, Spec pass, Freshness pass.**
 
-Reporting them separately stops one axis from masking the other.
+Reporting them separately stops any axis from masking the others.

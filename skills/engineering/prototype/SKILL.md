@@ -26,6 +26,15 @@ The two branches produce very different artifacts — getting this wrong wastes 
 5. **Surface the state.** After every action (logic) or on every variant switch (UI), print or render the full relevant state so the user can see what changed.
 6. **Delete or absorb when done.** When the prototype has answered its question, either delete it or fold the validated decision into the real code — don't leave it rotting in the repo.
 
-## When done
+## Completion criteria — do NOT finish until both pass
 
-The _answer_ is the only thing worth keeping from a prototype. Capture it somewhere durable (commit message, ADR, issue, or a `NOTES.md` next to the prototype) along with the question it was answering. If the user is around, that capture is a quick conversation; if not, leave the placeholder so they (or you, on the next pass) can fill in the verdict before deleting the prototype.
+A prototype is only done when **the answer is captured in a durable artifact AND the prototype code is deleted**. Both are required — not one or the other.
+
+1. **Capture the answer.** Write the question, the verdict, and the supporting evidence to one of:
+   - The final commit message that introduces the real implementation
+   - An ADR under `decisions/`
+   - A closed issue in the tracker
+   - A `NOTES.md` next to where the prototype lived
+2. **Delete the prototype code.** Remove the throwaway files, branches, and scratch DBs. If any of the validated decisions were folded into production code, reference the durable artifact from the relevant commit or code comment.
+
+If the user is around, confirm the durable artifact with them before deleting. If not, write the artifact yourself and leave a concise note so the next agent can verify the deletion.
