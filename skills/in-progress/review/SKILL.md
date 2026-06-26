@@ -1,6 +1,10 @@
 ---
 name: review
 description: Review the changes since a fixed point (commit, branch, tag, or merge-base) along three axes — Standards (does the code follow this repo's documented coding standards?), Spec (does the code match what the originating issue/PRD asked for?), and Freshness (does every docstring/schema/contract in the diff still accurately describe the code?). Runs all three reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
+
+session-shape:
+  estimated-minutes: 20
+  multi-session: false
 ---
 
 Three-axis review of the diff between `HEAD` and a fixed point the user supplies:

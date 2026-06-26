@@ -1,6 +1,10 @@
 ---
 name: diagnosing-bugs
 description: Diagnosis loop for hard bugs and performance regressions. Use when the user says "diagnose"/"debug this", or reports something broken/throwing/failing/slow.
+
+session-shape:
+  estimated-minutes: 30
+  multi-session: false
 ---
 
 # Diagnosing Bugs

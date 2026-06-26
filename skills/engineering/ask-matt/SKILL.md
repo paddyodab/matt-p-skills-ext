@@ -2,6 +2,10 @@
 name: ask-matt
 description: Ask which skill or flow fits your situation. A router over the user-invoked skills in this repo.
 disable-model-invocation: true
+
+session-shape:
+  estimated-minutes: 5
+  multi-session: false
 ---
 
 # Ask Matt
@@ -52,9 +56,21 @@ Not feature work — upkeep.
 
 Off the main flow entirely.
 
-- **`/grill-me`** — the same relentless interview as `/grill-with-docs`, but for when you have **no codebase**. Stateless: it saves nothing locally, builds no `CONTEXT.md`. Reach for it to sharpen any plan or design that doesn't live in a repo.
+- **`/grill-me`** — the same relentless interview as `/grill-with-docs`, but for when you have **no codebase**. Stateless: it saves nothing locally, builds no `CONTEXT.md`. Reach for it to sharpen any plan or design that doesn't live in a repo. Session shape: ~15 min.
 - **`/teach`** — learn a concept over multiple sessions, using the current directory as a stateful workspace.
 - **`/writing-great-skills`** — reference for writing and editing skills well.
+
+## Session shape
+
+Every skill below declares an expected session shape in its frontmatter (`estimated-minutes` and `multi-session`). When routing the user, surface the shape so they can choose deliberately:
+
+- Short clarification / orientation: `/ask-matt` (~5 min)
+- Quick planning / scoping: `/grill-with-docs` (~15 min), `/to-prd` (~15 min), `/to-issues` (~15 min)
+- Focused single-session implementation: `/implement` (~75 min), `/tdd` (~60 min), `/codebase-design` (~60 min), `/domain-modeling` (~45 min), `/prototype` (~45 min), `/diagnosing-bugs` (~30 min), `/improve-codebase-architecture` (~45 min), `/resolving-merge-conflicts` (~30 min), `/triage` (~30 min)
+- Multi-session investigation: `/decision-mapping` (~90 min, multi-session)
+- Bridge: `/handoff` (~10 min)
+
+Use the shape to warn the user before starting a long or multi-session skill, and to suggest `/handoff` or `/to-issues` when the work won't fit one session.
 
 ## Precondition
 

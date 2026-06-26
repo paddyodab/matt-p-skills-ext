@@ -19,6 +19,21 @@ Pick model-invocation only when the agent must reach the skill on its own, or an
 
 When user-invoked skills multiply past what you can remember, that piled-up cognitive load is cured by a **router skill**: one user-invoked skill that names the others and when to reach for each.
 
+## Session shape (frontmatter convention)
+
+Declare the expected session cost so routers and users can choose deliberately. Add a top-level `session-shape` block to the YAML frontmatter:
+
+```yaml
+session-shape:
+  estimated-minutes: 45
+  multi-session: false
+```
+
+- `estimated-minutes`: realistic wall-clock time for one focused run. Round to a memorable number (15, 30, 45, 60, 75, 90). Be honest — a 75-minute implement session is more useful than an aspirational 30.
+- `multi-session`: `true` if the skill is designed to span multiple sessions (e.g. decision-mapping), `false` if it should complete in one session.
+
+Router skills should read `session-shape` when recommending a skill and surface it to the user: "`/implement` is a ~75 min single-session skill. Do you have that budget now, or should we `/to-issues` first?" This is the same predictability goal as completion criteria, but applied before the session starts.
+
 ## Writing the description
 
 A model-invoked **description** does two jobs — state what the skill is, and list the **branches** that should trigger it. Every word increases **context load**, so a description earns even harder pruning than the body:

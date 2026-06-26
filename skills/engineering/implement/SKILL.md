@@ -2,6 +2,10 @@
 name: implement
 description: "Implement a piece of work based on a PRD or set of issues."
 disable-model-invocation: true
+
+session-shape:
+  estimated-minutes: 75
+  multi-session: false
 ---
 
 Implement the work described by the user in the PRD or issues.
